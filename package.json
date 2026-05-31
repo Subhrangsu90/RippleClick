@@ -7,7 +7,8 @@
 		"start": "electron .",
 		"dev": "node scripts/dev-watch.js",
 		"dev:once": "electron .",
-		"package:win": "electron-builder --win portable"
+		"package:win": "electron-builder --win portable",
+		"package:win:debug": "npm run package:win -- --config.compression=store"
 	},
 	"keywords": [
 		"windows",
@@ -18,7 +19,7 @@
 	"author": "",
 	"license": "MIT",
 	"devDependencies": {
-		"electron": "^31.7.7",
+		"electron": "^42.0.0",
 		"electron-builder": "^24.13.3"
 	},
 	"build": {
@@ -29,12 +30,40 @@
 			"src/**/*",
 			"package.json"
 		],
+		"afterPack": "scripts/after-pack.js",
+		"directories": {
+			"buildResources": "build"
+		},
 		"win": {
 			"icon": "build/icon.ico",
 			"signAndEditExecutable": false,
 			"target": [
-				"portable"
-			]
-		}
+				{
+					"target": "portable",
+					"arch": [
+						"x64"
+					]
+				}
+			],
+			"artifactName": "${productName}-v${version}.exe"
+		},
+		"nsis": {
+			"oneClick": false,
+			"allowToChangeInstallationDirectory": true,
+			"createDesktopShortcut": true,
+			"createStartMenuShortcut": true
+		},
+		"portable": {
+			"artifactName": "${productName}-v${version}.exe"
+		},
+		"asar": true,
+		"asarUnpack": false,
+		"compression": "maximum",
+		"electronLanguages": [
+			"en-US"
+		],
+		"removePackageKeywords": true,
+		"publish": null,
+		"electronVersion": "42.3.0"
 	}
 }
