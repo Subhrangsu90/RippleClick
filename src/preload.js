@@ -15,4 +15,8 @@ contextBridge.exposeInMainWorld("clickTapLight", {
 	onClick: (callback) => ipcRenderer.on("click", (_event, payload) => callback(payload)),
 	onShortcut: (callback) => ipcRenderer.on("shortcut", (_event, payload) => callback(payload)),
 	onState: (callback) => ipcRenderer.on("state", (_event, payload) => callback(payload)),
+	onDragStart: (callback) => ipcRenderer.on("dragStart", (_event, payload) => callback(payload)),
+	onDragMove: (callback) => ipcRenderer.on("dragMove", (_event, payload) => callback(payload)),
+	onDragEnd: (callback) => ipcRenderer.on("dragEnd", (_event, payload) => callback(payload)),
+	onScroll: (callback) => ipcRenderer.on("scroll", (_event, payload) => callback(payload)),
 });

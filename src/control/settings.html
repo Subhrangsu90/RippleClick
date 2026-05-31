@@ -6,6 +6,7 @@
 		<title>RippleClick Settings</title>
 		<link rel="stylesheet" href="./control.css" />
 	</head>
+
 	<body>
 		<main class="control-app settings-app" aria-label="RippleClick settings">
 			<section class="control-panel settings-panel">
@@ -40,28 +41,57 @@
 				</header>
 
 				<div class="settings-layout">
-					<nav class="settings-sidebar" aria-label="Settings sections">
-						<button type="button" class="settings-tab active" data-section="general">
-							<span class="material-symbols-rounded">tune</span>
-							General
-						</button>
-						<button type="button" class="settings-tab" data-section="clicks">
-							<span class="material-symbols-rounded">mouse</span>
-							Mouse clicks
-						</button>
-						<button type="button" class="settings-tab" data-section="ripple">
-							<span class="material-symbols-rounded">radio_button_checked</span>
-							Ripple effect
-						</button>
-						<button type="button" class="settings-tab" data-section="labels">
-							<span class="material-symbols-rounded">label</span>
-							Click labels
-						</button>
-						<button type="button" class="settings-tab" data-section="shortcuts">
-							<span class="material-symbols-rounded">keyboard</span>
-							Shortcuts
-						</button>
-					</nav>
+					<div class="settings-sidebar-col">
+						<nav class="settings-sidebar" aria-label="Settings sections">
+							<div class="profile-box">
+								<span class="profile-label">Editing Profile</span>
+								<select id="editingProfileSelect">
+									<option value="__default__">Default Profile</option>
+								</select>
+							</div>
+							<div class="settings-nav-section">
+								<button
+									type="button"
+									class="settings-tab active"
+									data-section="general"
+								>
+									<span class="material-symbols-rounded">tune</span>
+									General
+								</button>
+								<button type="button" class="settings-tab" data-section="clicks">
+									<span class="material-symbols-rounded">mouse</span>
+									Mouse clicks
+								</button>
+								<button type="button" class="settings-tab" data-section="ripple">
+									<span class="material-symbols-rounded"
+										>radio_button_checked</span
+									>
+									Ripple effect
+								</button>
+								<button type="button" class="settings-tab" data-section="labels">
+									<span class="material-symbols-rounded">label</span>
+									Click labels
+								</button>
+								<button type="button" class="settings-tab" data-section="shortcuts">
+									<span class="material-symbols-rounded">keyboard</span>
+									Shortcuts
+								</button>
+								<button type="button" class="settings-tab" data-section="profiles">
+									<span class="material-symbols-rounded">apps</span>
+									App profiles
+								</button>
+							</div>
+
+							<div
+								id="previewStage"
+								class="preview-stage"
+								title="Click to preview"
+								aria-label="Live ripple preview"
+							>
+								<span class="preview-hint" id="previewHint">Live preview</span>
+							</div>
+						</nav>
+					</div>
 
 					<div class="settings-content">
 						<section class="settings-page active" data-section-panel="general">
@@ -91,6 +121,10 @@
 									><input id="launchAtStartup" type="checkbox" />Open at
 									startup</label
 								>
+								<label class="share-chip"
+									><input id="dragHighlight" type="checkbox" />Drag
+									highlighting</label
+								>
 							</div>
 
 							<div class="settings-section">
@@ -104,17 +138,49 @@
 									Pick a ready-made style, then adjust colors, timing, and labels
 									to fit your workflow.
 								</p>
-								<nav class="mode-tabs" aria-label="Highlight presets">
-									<button type="button" class="preset active" data-preset="demo">
-										Demo
-									</button>
-									<button type="button" class="preset" data-preset="review">
-										Review
-									</button>
-									<button type="button" class="preset" data-preset="subtle">
-										Subtle
-									</button>
-								</nav>
+								<div class="preset-section">
+									<nav
+										id="presetTabs"
+										class="mode-tabs"
+										aria-label="Highlight presets"
+										style="flex-wrap: wrap"
+									>
+										<!-- Dynamic built-in and custom presets -->
+									</nav>
+									<div class="custom-preset-actions">
+										<input
+											id="customPresetName"
+											class="shortcut-input"
+											type="text"
+											placeholder="Preset name..."
+										/>
+										<button
+											id="savePresetBtn"
+											class="primary-action"
+											type="button"
+										>
+											<span
+												class="material-symbols-rounded"
+												style="font-size: 14px; margin-right: 4px"
+												>save</span
+											>
+											Save Preset
+										</button>
+										<button
+											id="deletePresetBtn"
+											class="secondary-action"
+											type="button"
+											style="display: none"
+										>
+											<span
+												class="material-symbols-rounded"
+												style="font-size: 14px; margin-right: 4px"
+												>delete</span
+											>
+											Delete Preset
+										</button>
+									</div>
+								</div>
 							</div>
 
 							<div class="settings-actions">
@@ -141,12 +207,16 @@
 							</div>
 
 							<div class="settings-card">
-								<div class="settings-card-title">Mouse buttons</div>
+								<div class="settings-card-title">Buttons & Clicking</div>
 								<p class="settings-card-description">
-									Keep the overlay focused by showing only the click types your
-									audience needs to see.
+									Choose which mouse buttons trigger highlights, and configure
+									double-click detection behavior.
 								</p>
-								<div class="check-grid" aria-label="Mouse buttons">
+								<div
+									class="check-grid"
+									aria-label="Mouse buttons"
+									style="margin-bottom: var(--space-3)"
+								>
 									<label title="Highlight left mouse clicks"
 										><input id="left" type="checkbox" />Left click</label
 									>
@@ -157,13 +227,21 @@
 										><input id="middle" type="checkbox" />Middle click</label
 									>
 								</div>
+								<div class="settings-grid two">
+									<label class="share-chip" title="Enable double-click detection">
+										<input
+											id="doubleClickDetection"
+											type="checkbox"
+										/>Double-click detection
+									</label>
+								</div>
 							</div>
 
 							<div class="settings-card">
-								<div class="settings-card-title">Click colors</div>
+								<div class="settings-card-title">Highlight Colors</div>
 								<p class="settings-card-description">
-									Use one color for every click, or give each mouse button its own
-									color.
+									Adjust default highlighting colors or set unique colors for
+									individual mouse buttons.
 								</p>
 								<div class="settings-section section-colors settings-colors">
 									<label title="Highlight color"
@@ -176,6 +254,7 @@
 											<option value="separate">Separate</option>
 										</select>
 									</label>
+									<hr class="card-divider" />
 									<label class="button-color" title="Left click color"
 										><span>Left</span><input id="leftColor" type="color"
 									/></label>
@@ -188,6 +267,50 @@
 									<label title="Inner color"
 										><span>Inner</span><input id="secondaryColor" type="color"
 									/></label>
+								</div>
+							</div>
+
+							<div class="settings-card">
+								<div class="settings-card-title">Scroll & Drag Feedback</div>
+								<p class="settings-card-description">
+									Enable and customize visual trails while dragging, and configure
+									floating scroll wheel indicators.
+								</p>
+								<div class="settings-grid two">
+									<label class="share-chip" title="Enable scroll wheel indicator">
+										<input id="scrollIndicator" type="checkbox" />Scroll wheel
+										indicator
+									</label>
+									<hr class="card-divider" />
+									<label title="Neon laser glow style">
+										<span>Style</span>
+										<select id="dragHighlightStyle">
+											<option value="laser">Neon Laser</option>
+											<option value="solid">Solid Line</option>
+										</select>
+									</label>
+									<label title="Drag highlight color mode">
+										<span>Color mode</span>
+										<select id="dragColorMode">
+											<option value="click">Same as Click</option>
+											<option value="custom">Custom Color</option>
+										</select>
+									</label>
+									<label id="dragColorLabel" title="Custom drag color">
+										<span>Drag Color</span>
+										<input id="dragColor" type="color" />
+									</label>
+									<label title="Thickness of the drag trail">
+										<span>Thickness</span>
+										<input
+											id="dragWidth"
+											type="range"
+											min="2"
+											max="18"
+											step="1"
+										/>
+										<output id="dragWidthValue"></output>
+									</label>
 								</div>
 							</div>
 						</section>
@@ -231,6 +354,7 @@
 										<input id="stroke" type="range" min="2" max="12" step="1" />
 										<output id="strokeValue"></output>
 									</label>
+									<hr class="card-divider" />
 									<label>
 										<span>Glow</span>
 										<input id="glow" type="range" min="0" max="80" step="4" />
@@ -412,6 +536,53 @@
 							</div>
 
 							<div class="settings-card">
+								<div class="settings-card-title">
+									Keyboard display customization
+								</div>
+								<p class="settings-card-description">
+									Customize where keyboard shortcuts are positioned and how they
+									are styled on screen.
+								</p>
+								<div class="settings-grid two">
+									<label title="Position of the keyboard display overlay">
+										<span>Position</span>
+										<select id="keystrokePosition">
+											<option value="bottom">Bottom</option>
+											<option value="center">Center</option>
+											<option value="top">Top</option>
+										</select>
+									</label>
+									<label title="Font size of the overlay text">
+										<span>Size</span>
+										<input
+											id="keystrokeSize"
+											type="range"
+											min="12"
+											max="24"
+											step="1"
+										/>
+										<output id="keystrokeSizeValue"></output>
+									</label>
+									<label title="Keystroke panel background color">
+										<span>Background</span>
+										<input id="keystrokeBg" type="color" />
+									</label>
+									<label title="Keystroke panel text color">
+										<span>Text Color</span>
+										<input id="keystrokeColor" type="color" />
+									</label>
+									<label title="Keycap background color">
+										<span>Keycap Bg</span>
+										<input id="keystrokeKeycapBg" type="color" />
+									</label>
+									<label title="Keycap text color">
+										<span>Keycap Text</span>
+										<input id="keystrokeKeycapColor" type="color" />
+									</label>
+								</div>
+							</div>
+
+							<div class="settings-card">
 								<div class="settings-card-title">App shortcuts</div>
 								<p class="settings-card-description">
 									Click a field, then press a shortcut. Use at least one modifier,
@@ -453,6 +624,56 @@
 								</div>
 							</div>
 						</section>
+
+						<section class="settings-page" data-section-panel="profiles">
+							<div class="settings-heading">
+								<div>
+									<h1>App profiles</h1>
+									<p>
+										Define custom styles for specific applications. RippleClick
+										will automatically apply them when those apps are in focus.
+									</p>
+								</div>
+							</div>
+
+							<div class="settings-card">
+								<div class="settings-card-title">Add new app profile</div>
+								<p class="settings-card-description">
+									Type the executable process name (e.g. <code>chrome</code>,
+									<code>powerpnt</code>, <code>notepad</code>) without the
+									<code>.exe</code> extension.
+								</p>
+								<div class="profile-add-form">
+									<input
+										id="newProfileApp"
+										class="shortcut-input"
+										type="text"
+										placeholder="e.g. chrome"
+									/>
+									<button id="addProfileBtn" class="primary-action" type="button">
+										<span class="material-symbols-rounded">add</span>
+										Add App Profile
+									</button>
+								</div>
+							</div>
+
+							<div class="settings-card">
+								<div class="settings-card-title">Configured app profiles</div>
+								<div class="profiles-list-container">
+									<table class="profiles-table">
+										<thead>
+											<tr>
+												<th>Application process</th>
+												<th>Actions</th>
+											</tr>
+										</thead>
+										<tbody id="profilesListBody">
+											<!-- Dynamically populated -->
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</section>
 					</div>
 				</div>
 
@@ -462,6 +683,29 @@
 				</div>
 			</section>
 		</main>
+
+		<div id="confirmModal" class="modal-overlay">
+			<div class="modal-card">
+				<div class="modal-header">
+					<span class="material-symbols-rounded warning-icon">warning</span>
+					<h2>Reset Everything?</h2>
+				</div>
+				<p class="modal-description">
+					This will permanently delete all your custom presets, app profiles, and
+					shortcuts, resetting all configurations to the factory default. This action
+					cannot be undone.
+				</p>
+				<div class="modal-actions">
+					<button id="cancelResetBtn" class="secondary-action" type="button">
+						Cancel
+					</button>
+					<button id="confirmResetBtn" class="danger-action" type="button">
+						Reset Everything
+					</button>
+				</div>
+			</div>
+		</div>
+
 		<script src="./settings.js"></script>
 	</body>
 </html>

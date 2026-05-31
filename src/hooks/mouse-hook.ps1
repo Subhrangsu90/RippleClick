@@ -7,11 +7,21 @@ using System.Windows.Forms;
 public class InputHook {
   private const int WH_MOUSE_LL = 14;
   private const int WH_KEYBOARD_LL = 13;
+  private const int WM_MOUSEMOVE = 0x0200;
   private const int WM_LBUTTONDOWN = 0x0201;
+  private const int WM_LBUTTONUP = 0x0202;
   private const int WM_RBUTTONDOWN = 0x0204;
+  private const int WM_RBUTTONUP = 0x0205;
   private const int WM_MBUTTONDOWN = 0x0207;
+  private const int WM_MBUTTONUP = 0x0208;
+  private const int WM_MOUSEWHEEL = 0x020A;
   private const int WM_KEYDOWN = 0x0100;
   private const int WM_SYSKEYDOWN = 0x0104;
+
+  private static bool _isLButtonDown = false;
+  private static bool _isRButtonDown = false;
+  private static bool _isMButtonDown = false;
+  private static DateTime _lastMoveTime = DateTime.MinValue;
 
   private static LowLevelMouseProc _mouseProc = MouseCallback;
   private static LowLevelKeyboardProc _keyboardProc = KeyboardCallback;
@@ -43,17 +53,64 @@ public class InputHook {
   private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
+  private static string GetActiveApp() {
+    IntPtr hwnd = GetForegroundWindow();
+    if (hwnd != IntPtr.Zero) {
+      uint pid = 0;
+      GetWindowThreadProcessId(hwnd, out pid);
+      if (pid != 0) {
+        try {
+          using (Process p = Process.GetProcessById((int)pid)) {
+            return p.ProcessName;
+          }
+        } catch {}
+      }
+    }
+    return "unknown";
+  }
+
   private static IntPtr MouseCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
       int message = wParam.ToInt32();
       string button = null;
-      if (message == WM_LBUTTONDOWN) button = "left";
-      if (message == WM_RBUTTONDOWN) button = "right";
-      if (message == WM_MBUTTONDOWN) button = "middle";
+      bool isDown = false;
+      bool isUp = false;
 
-      if (button != null) {
+      if (message == WM_LBUTTONDOWN) { button = "left"; isDown = true; _isLButtonDown = true; }
+      if (message == WM_LBUTTONUP) { button = "left"; isUp = true; _isLButtonDown = false; }
+      if (message == WM_RBUTTONDOWN) { button = "right"; isDown = true; _isRButtonDown = true; }
+      if (message == WM_RBUTTONUP) { button = "right"; isUp = true; _isRButtonDown = false; }
+      if (message == WM_MBUTTONDOWN) { button = "middle"; isDown = true; _isMButtonDown = true; }
+      if (message == WM_MBUTTONUP) { button = "middle"; isUp = true; _isMButtonDown = false; }
+
+      if (isDown) {
+        string appName = GetActiveApp();
         MSLLHOOKSTRUCT hookStruct = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
-        Console.WriteLine("{\"type\":\"click\",\"button\":\"" + button + "\",\"x\":" + hookStruct.pt.x + ",\"y\":" + hookStruct.pt.y + "}");
+        Console.WriteLine("{\"type\":\"dragStart\",\"button\":\"" + button + "\",\"x\":" + hookStruct.pt.x + ",\"y\":" + hookStruct.pt.y + ",\"app\":\"" + JsonEscape(appName) + "\"}");
+        Console.WriteLine("{\"type\":\"click\",\"button\":\"" + button + "\",\"x\":" + hookStruct.pt.x + ",\"y\":" + hookStruct.pt.y + ",\"app\":\"" + JsonEscape(appName) + "\"}");
+        Console.Out.Flush();
+      }
+      else if (isUp) {
+        MSLLHOOKSTRUCT hookStruct = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
+        Console.WriteLine("{\"type\":\"dragEnd\",\"button\":\"" + button + "\",\"x\":" + hookStruct.pt.x + ",\"y\":" + hookStruct.pt.y + "}");
+        Console.Out.Flush();
+      }
+      else if (message == WM_MOUSEMOVE) {
+        if (_isLButtonDown || _isRButtonDown || _isMButtonDown) {
+          if ((DateTime.Now - _lastMoveTime).TotalMilliseconds >= 16) {
+            _lastMoveTime = DateTime.Now;
+            MSLLHOOKSTRUCT hookStruct = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
+            Console.WriteLine("{\"type\":\"dragMove\",\"x\":" + hookStruct.pt.x + ",\"y\":" + hookStruct.pt.y + "}");
+            Console.Out.Flush();
+          }
+        }
+      }
+      else if (message == WM_MOUSEWHEEL) {
+        string appName = GetActiveApp();
+        MSLLHOOKSTRUCT hookStruct = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
+        short scrollDelta = (short)(hookStruct.mouseData >> 16);
+        string direction = scrollDelta > 0 ? "up" : "down";
+        Console.WriteLine("{\"type\":\"scroll\",\"direction\":\"" + direction + "\",\"x\":" + hookStruct.pt.x + ",\"y\":" + hookStruct.pt.y + ",\"app\":\"" + JsonEscape(appName) + "\"}");
         Console.Out.Flush();
       }
     }
@@ -70,8 +127,9 @@ public class InputHook {
         string displayKey = FormatKey(key);
 
         if (!IsModifier(key) && displayKey.Length > 0) {
+          string appName = GetActiveApp();
           string combo = BuildCombo(displayKey);
-          Console.WriteLine("{\"type\":\"shortcut\",\"keys\":\"" + JsonEscape(combo) + "\"}");
+          Console.WriteLine("{\"type\":\"shortcut\",\"keys\":\"" + JsonEscape(combo) + "\",\"app\":\"" + JsonEscape(appName) + "\"}");
           Console.Out.Flush();
         }
       }
@@ -173,6 +231,12 @@ public class InputHook {
 
   [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
   private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+
+  [DllImport("user32.dll")]
+  private static extern IntPtr GetForegroundWindow();
+
+  [DllImport("user32.dll")]
+  private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
   [DllImport("user32.dll")]
   private static extern short GetKeyState(int nVirtKey);

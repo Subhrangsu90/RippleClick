@@ -24,15 +24,25 @@ document.addEventListener(
 );
 
 function applyTheme(theme) {
-	const safeTheme = theme === "light" ? "light" : "dark";
-	currentTheme = safeTheme;
+	let targetTheme = theme;
+	if (theme === "system") {
+		targetTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+	}
+	const safeTheme = targetTheme === "dark" ? "dark" : "light";
+	currentTheme = theme;
 	document.documentElement.dataset.theme = safeTheme;
 }
 
 function syncThemeFromStorage() {
-	const storedTheme = localStorage.getItem(themeStorageKey) || "light";
+	const storedTheme = localStorage.getItem(themeStorageKey) || "system";
 	if (storedTheme !== currentTheme) applyTheme(storedTheme);
 }
+
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+	if (localStorage.getItem(themeStorageKey) === "system") {
+		document.documentElement.dataset.theme = e.matches ? "dark" : "light";
+	}
+});
 
 function applyState(nextState) {
 	state = nextState;

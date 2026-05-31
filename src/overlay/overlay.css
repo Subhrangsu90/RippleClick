@@ -17,21 +17,19 @@ body {
 .shortcut {
 	position: fixed;
 	left: 50%;
-	bottom: 8vh;
 	display: inline-flex;
 	align-items: center;
 	gap: 8px;
-	transform: translateX(-50%);
 	max-width: min(78vw, 720px);
 	padding: 8px 10px;
 	border-radius: 16px;
-	background: rgba(20, 26, 23, 0.88);
-	color: #f8fbf5;
+	background: color-mix(in srgb, var(--keystroke-bg, #141a17) 88%, transparent);
+	color: var(--keystroke-color, #f8fbf5);
 	box-shadow:
 		0 0 0 1px rgba(255, 255, 255, 0.18),
 		0 16px 42px rgba(0, 0, 0, 0.28);
 	font:
-		800 14px/1.2 system-ui,
+		800 var(--keystroke-size, 14px)/1.2 system-ui,
 		-apple-system,
 		BlinkMacSystemFont,
 		"Segoe UI",
@@ -39,20 +37,40 @@ body {
 	text-align: center;
 	white-space: nowrap;
 	opacity: 0;
+	backdrop-filter: blur(4px);
+	--base-transform: translateX(-50%);
+	transform: var(--base-transform);
 	animation: shortcut-pop var(--duration) ease-out forwards;
+}
+
+.shortcut.pos-top {
+	top: 8vh;
+	bottom: auto;
+}
+
+.shortcut.pos-center {
+	top: 50%;
+	bottom: auto;
+	--base-transform: translate(-50%, -50%);
+}
+
+.shortcut.pos-bottom {
+	bottom: 8vh;
+	top: auto;
 }
 
 .keycap {
 	min-width: 34px;
 	padding: 7px 10px;
 	border-radius: 10px;
-	background: rgba(248, 251, 245, 0.96);
-	color: #141a17;
+	background: var(--keystroke-keycap-bg, #f8fbf5);
+	color: var(--keystroke-keycap-color, #141a17);
 	box-shadow: inset 0 -2px 0 rgba(95, 126, 85, 0.18);
 }
 
 .shortcut-plus {
-	color: rgba(248, 251, 245, 0.78);
+	color: var(--keystroke-color, #f8fbf5);
+	opacity: 0.78;
 	font-weight: 700;
 }
 
@@ -135,17 +153,79 @@ body {
 @keyframes shortcut-pop {
 	0% {
 		opacity: 0;
-		transform: translateX(-50%) translateY(12px) scale(0.96);
+		transform: var(--base-transform) translateY(12px) scale(0.96);
 	}
 
 	14%,
 	78% {
 		opacity: 1;
-		transform: translateX(-50%) translateY(0) scale(1);
+		transform: var(--base-transform) translateY(0) scale(1);
 	}
 
 	100% {
 		opacity: 0;
-		transform: translateX(-50%) translateY(8px) scale(0.98);
+		transform: var(--base-transform) translateY(8px) scale(0.98);
+	}
+}
+
+.drag-halo {
+	position: absolute;
+	width: var(--size);
+	height: var(--size);
+	left: var(--x);
+	top: var(--y);
+	transform: translate(-50%, -50%);
+	border-radius: 999px;
+	opacity: var(--opacity);
+	background: color-mix(in srgb, var(--color) 40%, transparent);
+	border: 2px solid var(--color);
+	pointer-events: none;
+	box-shadow: 0 0 12px var(--color);
+	z-index: 999999;
+}
+
+.scroll-indicator {
+	position: fixed;
+	transform: translate(-50%, -50%);
+	pointer-events: none;
+	z-index: 999999;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 10px;
+	border-radius: 16px;
+	background: rgba(20, 26, 23, 0.85);
+	border: 1px solid rgba(255, 255, 255, 0.15);
+	color: #ffffff;
+	font-family: inherit;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+	backdrop-filter: blur(4px);
+	animation: scroll-fade 600ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.scroll-svg {
+	opacity: 0.8;
+}
+
+.scroll-arrow {
+	font-weight: bold;
+	font-size: 14px;
+}
+
+@keyframes scroll-fade {
+	0% {
+		opacity: 0;
+		transform: translate(-50%, -35%) scale(0.9);
+	}
+	15% {
+		opacity: 1;
+		transform: translate(-50%, -50%) scale(1);
+	}
+	80% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+		transform: translate(-50%, -65%) scale(0.9);
 	}
 }

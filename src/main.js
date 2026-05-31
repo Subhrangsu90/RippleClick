@@ -48,6 +48,19 @@ const defaultSettings = {
 	highlightRight: true,
 	highlightMiddle: true,
 	controlAlwaysOnTop: true,
+	dragHighlight: true,
+	dragHighlightStyle: "laser",
+	dragColorMode: "click",
+	dragColor: "#f59e0b",
+	dragWidth: 8,
+	doubleClickDetection: true,
+	scrollIndicator: true,
+	keystrokePosition: "bottom",
+	keystrokeSize: 14,
+	keystrokeBg: "#141a17",
+	keystrokeColor: "#f8fbf5",
+	keystrokeKeycapBg: "#f8fbf5",
+	keystrokeKeycapColor: "#141a17",
 	toggleShortcut: "Control+Alt+H",
 	controllerShortcut: "Control+Alt+C",
 };
@@ -496,6 +509,14 @@ function emitClick(click) {
 		return;
 	}
 
+	let activeSettings = { ...settings };
+	if (!click.test && click.app && settings.profiles) {
+		const lowerApp = click.app.toLowerCase();
+		if (settings.profiles[lowerApp]) {
+			activeSettings = { ...settings, ...settings.profiles[lowerApp] };
+		}
+	}
+
 	for (const [displayId, win] of overlays) {
 		if (win.isDestroyed()) continue;
 		const display = screen.getAllDisplays().find((item) => item.id === displayId);
@@ -510,7 +531,90 @@ function emitClick(click) {
 				button: click.button || "left",
 				x: click.test ? point.x : point.x - x,
 				y: click.test ? point.y : point.y - y,
-				settings,
+				settings: activeSettings,
+			});
+		}
+	}
+}
+
+let activeDragSettings = null;
+
+function emitDragStart(drag) {
+	if (!enabled || !settings.dragHighlight) return;
+
+	const point = screen.screenToDipPoint({ x: Number(drag.x), y: Number(drag.y) });
+	if (isPointInsideControlWindow(point)) return;
+
+	activeDragSettings = { ...settings };
+	if (drag.app && settings.profiles) {
+		const lowerApp = drag.app.toLowerCase();
+		if (settings.profiles[lowerApp]) {
+			activeDragSettings = { ...settings, ...settings.profiles[lowerApp] };
+		}
+	}
+
+	for (const [displayId, win] of overlays) {
+		if (win.isDestroyed()) continue;
+		const display = screen.getAllDisplays().find((item) => item.id === displayId);
+		if (!display) continue;
+
+		const { x, y, width, height } = display.bounds;
+		const inside =
+			point.x >= x && point.x <= x + width && point.y >= y && point.y <= y + height;
+		if (inside) {
+			applyOverlayWindowOptions(win);
+			win.webContents.send("dragStart", {
+				button: drag.button || "left",
+				x: point.x - x,
+				y: point.y - y,
+				settings: activeDragSettings,
+			});
+		}
+	}
+}
+
+function emitDragMove(drag) {
+	if (!enabled || !activeDragSettings || !activeDragSettings.dragHighlight) return;
+
+	const point = screen.screenToDipPoint({ x: Number(drag.x), y: Number(drag.y) });
+
+	for (const [displayId, win] of overlays) {
+		if (win.isDestroyed()) continue;
+		const display = screen.getAllDisplays().find((item) => item.id === displayId);
+		if (!display) continue;
+
+		const { x, y, width, height } = display.bounds;
+		const inside =
+			point.x >= x && point.x <= x + width && point.y >= y && point.y <= y + height;
+		if (inside) {
+			applyOverlayWindowOptions(win);
+			win.webContents.send("dragMove", {
+				x: point.x - x,
+				y: point.y - y,
+			});
+		}
+	}
+}
+
+function emitDragEnd(drag) {
+	if (!enabled) return;
+	activeDragSettings = null;
+
+	const point = screen.screenToDipPoint({ x: Number(drag.x), y: Number(drag.y) });
+
+	for (const [displayId, win] of overlays) {
+		if (win.isDestroyed()) continue;
+		const display = screen.getAllDisplays().find((item) => item.id === displayId);
+		if (!display) continue;
+
+		const { x, y, width, height } = display.bounds;
+		const inside =
+			point.x >= x && point.x <= x + width && point.y >= y && point.y <= y + height;
+		if (inside) {
+			applyOverlayWindowOptions(win);
+			win.webContents.send("dragEnd", {
+				x: point.x - x,
+				y: point.y - y,
 			});
 		}
 	}
@@ -519,13 +623,64 @@ function emitClick(click) {
 function emitShortcut(shortcut) {
 	if (!enabled || !settings.showKeystrokes || !shortcut.keys) return;
 
+	let activeSettings = { ...settings };
+	if (shortcut.app && settings.profiles) {
+		const lowerApp = shortcut.app.toLowerCase();
+		if (settings.profiles[lowerApp]) {
+			activeSettings = { ...settings, ...settings.profiles[lowerApp] };
+		}
+	}
+
 	const payload = {
 		keys: shortcut.keys,
-		duration: settings.keystrokeDuration,
+		duration: activeSettings.keystrokeDuration,
+		settings: {
+			keystrokePosition: activeSettings.keystrokePosition,
+			keystrokeSize: activeSettings.keystrokeSize,
+			keystrokeBg: activeSettings.keystrokeBg,
+			keystrokeColor: activeSettings.keystrokeColor,
+			keystrokeKeycapBg: activeSettings.keystrokeKeycapBg,
+			keystrokeKeycapColor: activeSettings.keystrokeKeycapColor,
+		},
 	};
 
 	for (const win of overlays.values()) {
 		if (!win.isDestroyed()) win.webContents.send("shortcut", payload);
+	}
+}
+
+function emitScroll(scroll) {
+	if (!enabled || !settings.scrollIndicator) return;
+
+	const point = screen.screenToDipPoint({ x: Number(scroll.x), y: Number(scroll.y) });
+	if (isPointInsideControlWindow(point)) return;
+
+	let activeSettings = { ...settings };
+	if (scroll.app && settings.profiles) {
+		const lowerApp = scroll.app.toLowerCase();
+		if (settings.profiles[lowerApp]) {
+			activeSettings = { ...settings, ...settings.profiles[lowerApp] };
+		}
+	}
+
+	if (!activeSettings.scrollIndicator) return;
+
+	for (const [displayId, win] of overlays) {
+		if (win.isDestroyed()) continue;
+		const display = screen.getAllDisplays().find((item) => item.id === displayId);
+		if (!display) continue;
+
+		const { x, y, width, height } = display.bounds;
+		const inside =
+			point.x >= x && point.x <= x + width && point.y >= y && point.y <= y + height;
+		if (inside) {
+			applyOverlayWindowOptions(win);
+			win.webContents.send("scroll", {
+				direction: scroll.direction,
+				x: point.x - x,
+				y: point.y - y,
+			});
+		}
 	}
 }
 
@@ -560,6 +715,10 @@ function startMouseHook() {
 				const event = JSON.parse(line);
 				if (event.type === "click") emitClick(event);
 				if (event.type === "shortcut") emitShortcut(event);
+				if (event.type === "dragStart") emitDragStart(event);
+				if (event.type === "dragMove") emitDragMove(event);
+				if (event.type === "dragEnd") emitDragEnd(event);
+				if (event.type === "scroll") emitScroll(event);
 			} catch {
 				// Ignore malformed helper output.
 			}
