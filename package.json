@@ -15,7 +15,8 @@
 		"format:check": "prettier . --check",
 		"package:win": "electron-builder --win nsis",
 		"package:win:portable": "electron-builder --win portable",
-		"package:win:debug": "npm run package:win -- --config.compression=store"
+		"package:win:debug": "npm run package:win -- --config.compression=store",
+		"version": "node scripts/update-changelog.js && git add CHANGELOG.md"
 	},
 	"keywords": [
 		"windows",
