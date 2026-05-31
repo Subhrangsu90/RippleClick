@@ -242,7 +242,7 @@ select {
 .settings-layout {
   -webkit-app-region: no-drag;
   display: grid;
-  grid-template-columns: 11rem minmax(0, 1fr);
+  grid-template-columns: 12.75rem minmax(0, 1fr);
   gap: var(--space-5);
   min-height: 0;
 }
@@ -306,12 +306,27 @@ select {
   gap: var(--space-4);
 }
 
+.settings-heading>div {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
 .settings-heading h1 {
   margin: 0;
   color: var(--color-text);
   font-size: var(--text-xl);
   font-weight: 700;
   letter-spacing: 0;
+}
+
+.settings-heading p,
+.settings-card-description,
+.section-description {
+  margin: 0;
+  color: var(--color-text-quiet);
+  font-size: var(--text-sm);
+  line-height: 1.35;
 }
 
 .settings-card {
@@ -329,6 +344,10 @@ select {
   font-weight: 700;
 }
 
+.settings-card-description {
+  margin-top: calc(var(--space-3) * -1);
+}
+
 .settings-grid {
   display: grid;
   gap: var(--space-3);
@@ -340,7 +359,7 @@ select {
 
 .settings-grid label:not(.share-chip) {
   display: grid;
-  grid-template-columns: 5.25rem minmax(0, 1fr) auto;
+  grid-template-columns: minmax(6.75rem, auto) minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--space-3);
   min-width: 0;
@@ -769,7 +788,7 @@ kbd {
 
 .section-colors label {
   display: grid;
-  grid-template-columns: 5rem minmax(0, 1fr) auto;
+  grid-template-columns: minmax(5.75rem, auto) minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--space-3);
   height: var(--size-input);
@@ -829,6 +848,23 @@ input[type="checkbox"] {
   accent-color: var(--color-primary);
 }
 
+.shortcut-input {
+  min-width: 0;
+  height: var(--size-switch-height);
+  border: 0;
+  border-radius: var(--space-5);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  padding: 0 var(--space-3);
+  font-size: var(--text-xs);
+  outline: 0;
+  cursor: text;
+}
+
+.shortcut-input:focus {
+  box-shadow: 0 0 0 0.125rem color-mix(in srgb, var(--color-primary) 44%, transparent);
+}
+
 .switch {
   position: relative;
   width: var(--size-switch-width);
@@ -878,7 +914,7 @@ input[type="checkbox"] {
 
 .sliders label {
   display: grid;
-  grid-template-columns: 5rem minmax(0, 1fr) var(--size-slider-value);
+  grid-template-columns: minmax(6.75rem, auto) minmax(0, 1fr) var(--size-slider-value);
   align-items: center;
   gap: var(--space-4);
   min-height: var(--size-input);

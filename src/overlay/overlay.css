@@ -60,9 +60,11 @@ body {
   transform: translate(-50%, -50%);
   border-radius: 999px;
   opacity: var(--opacity);
-  border: var(--stroke) solid var(--color);
+  background: color-mix(in srgb, var(--color) var(--fill-opacity), transparent);
+  border: var(--stroke) solid color-mix(in srgb, var(--color) var(--ring-opacity), transparent);
+  filter: blur(var(--softness-blur));
   box-shadow:
-    0 0 0 2px color-mix(in srgb, var(--secondary-color) 88%, transparent),
+    0 0 0 2px color-mix(in srgb, var(--secondary-color) var(--center-opacity), transparent),
     0 0 var(--glow) color-mix(in srgb, var(--color) 78%, transparent);
   animation: click-pulse var(--duration) ease-out forwards;
 }
@@ -91,16 +93,14 @@ body {
   position: absolute;
   inset: 16%;
   border-radius: inherit;
-  border: calc(var(--stroke) * 0.72) solid var(--secondary-color);
+  border: calc(var(--stroke) * 0.72) solid color-mix(in srgb, var(--secondary-color) var(--center-opacity), transparent);
   opacity: var(--inner-opacity);
 }
 
 .pulse.follow {
-  background: radial-gradient(
-    circle,
-    color-mix(in srgb, var(--color) 26%, transparent) 0 18%,
-    transparent 19% 100%
-  );
+  background: radial-gradient(circle,
+      color-mix(in srgb, var(--color) 26%, transparent) 0 18%,
+      transparent 19% 100%);
 }
 
 @keyframes click-pulse {
@@ -115,7 +115,7 @@ body {
 
   100% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(1.35);
+    transform: translate(-50%, -50%) scale(var(--end-scale));
   }
 }
 

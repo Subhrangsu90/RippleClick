@@ -12,6 +12,11 @@ let currentSettings = {
   stroke: 4,
   opacity: 96,
   glow: 32,
+  fillOpacity: 0,
+  ringOpacity: 100,
+  centerOpacity: 88,
+  spread: 135,
+  softness: 0,
   showKeystrokes: true,
   keystrokeDuration: 1100,
   showLabel: true,
@@ -37,6 +42,12 @@ function renderPulse(event) {
 
   const settings = event.settings || currentSettings;
   const color = colorFor(event.button, settings);
+  const fillOpacity = Number(settings.fillOpacity ?? 0);
+  const ringOpacity = Number(settings.ringOpacity ?? 100);
+  const centerOpacity = Number(settings.centerOpacity ?? 88);
+  const spread = Number(settings.spread ?? 135);
+  const softness = Number(settings.softness ?? 0);
+  const endScale = Math.max(1.05, spread / 100);
   const pulse = document.createElement('div');
   pulse.className = settings.followThrough ? 'pulse follow' : 'pulse';
   pulse.dataset.button = labelFor(event.button, settings);
@@ -49,7 +60,12 @@ function renderPulse(event) {
   pulse.style.setProperty('--stroke', `${settings.stroke}px`);
   pulse.style.setProperty('--opacity', String(settings.opacity / 100));
   pulse.style.setProperty('--glow', `${settings.glow}px`);
-  pulse.style.setProperty('--inner-opacity', settings.doubleRing ? '0.88' : '0');
+  pulse.style.setProperty('--fill-opacity', `${fillOpacity}%`);
+  pulse.style.setProperty('--ring-opacity', `${ringOpacity}%`);
+  pulse.style.setProperty('--center-opacity', `${centerOpacity}%`);
+  pulse.style.setProperty('--inner-opacity', settings.doubleRing ? String(centerOpacity / 100) : '0');
+  pulse.style.setProperty('--softness-blur', `${softness / 36}px`);
+  pulse.style.setProperty('--end-scale', String(endScale));
   pulse.style.setProperty('--label-opacity', settings.showLabel ? '1' : '0');
   pulse.style.setProperty('--label-top', settings.labelPosition === 'top' ? 'auto' : 'calc(100% + 8px)');
   pulse.style.setProperty('--label-bottom', settings.labelPosition === 'top' ? 'calc(100% + 8px)' : 'auto');

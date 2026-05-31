@@ -11,12 +11,25 @@ const fields = {
 	stroke: document.getElementById("stroke"),
 	glow: document.getElementById("glow"),
 	opacity: document.getElementById("opacity"),
+	fillOpacity: document.getElementById("fillOpacity"),
+	ringOpacity: document.getElementById("ringOpacity"),
+	centerOpacity: document.getElementById("centerOpacity"),
+	spread: document.getElementById("spread"),
+	softness: document.getElementById("softness"),
+	showRipple: document.getElementById("showRipple"),
 	keystrokeDuration: document.getElementById("keystrokeDuration"),
+	toggleShortcut: document.getElementById("toggleShortcut"),
+	controllerShortcut: document.getElementById("controllerShortcut"),
 	sizeValue: document.getElementById("sizeValue"),
 	durationValue: document.getElementById("durationValue"),
 	strokeValue: document.getElementById("strokeValue"),
 	glowValue: document.getElementById("glowValue"),
 	opacityValue: document.getElementById("opacityValue"),
+	fillOpacityValue: document.getElementById("fillOpacityValue"),
+	ringOpacityValue: document.getElementById("ringOpacityValue"),
+	centerOpacityValue: document.getElementById("centerOpacityValue"),
+	spreadValue: document.getElementById("spreadValue"),
+	softnessValue: document.getElementById("softnessValue"),
 	keystrokeDurationValue: document.getElementById("keystrokeDurationValue"),
 	labelPosition: document.getElementById("labelPosition"),
 	labelText: document.getElementById("labelText"),
@@ -32,6 +45,7 @@ const fields = {
 	test: document.getElementById("test"),
 	reset: document.getElementById("reset"),
 	resetPreset: document.getElementById("resetPreset"),
+	resetShortcuts: document.getElementById("resetShortcuts"),
 	themeToggle: document.getElementById("themeToggle"),
 	closeSettings: document.getElementById("closeSettings"),
 	platformStatus: document.getElementById("platformStatus"),
@@ -51,6 +65,12 @@ const presets = {
 		stroke: 5,
 		opacity: 100,
 		glow: 44,
+		fillOpacity: 0,
+		ringOpacity: 100,
+		centerOpacity: 88,
+		spread: 135,
+		softness: 0,
+		showRipple: true,
 		showKeystrokes: true,
 		keystrokeDuration: 1100,
 		showLabel: true,
@@ -71,6 +91,12 @@ const presets = {
 		stroke: 6,
 		opacity: 94,
 		glow: 36,
+		fillOpacity: 0,
+		ringOpacity: 100,
+		centerOpacity: 88,
+		spread: 135,
+		softness: 0,
+		showRipple: true,
 		showKeystrokes: true,
 		keystrokeDuration: 1400,
 		showLabel: true,
@@ -91,6 +117,12 @@ const presets = {
 		stroke: 3,
 		opacity: 76,
 		glow: 12,
+		fillOpacity: 0,
+		ringOpacity: 100,
+		centerOpacity: 88,
+		spread: 135,
+		softness: 0,
+		showRipple: true,
 		showKeystrokes: false,
 		keystrokeDuration: 800,
 		showLabel: false,
@@ -137,6 +169,92 @@ function setActivePreset(preset) {
 function applyAccent(color) {
 	document.documentElement.style.setProperty("--accent", color);
 	document.documentElement.style.setProperty("--soft", `${color}24`);
+}
+
+function shortcutToDisplay(shortcut) {
+	return String(shortcut || "")
+		.replaceAll("Control", "Ctrl")
+		.replaceAll("+", " + ");
+}
+
+function eventToShortcut(event) {
+	const parts = [];
+	if (event.ctrlKey) parts.push("Control");
+	if (event.altKey) parts.push("Alt");
+	if (event.shiftKey) parts.push("Shift");
+	if (event.metaKey) parts.push("Super");
+
+	const keyMap = {
+		" ": "Space",
+		ArrowUp: "Up",
+		ArrowDown: "Down",
+		ArrowLeft: "Left",
+		ArrowRight: "Right",
+		Escape: "Esc",
+	};
+	const key = keyMap[event.key] || event.key;
+	if (!/^[\x20-\x7E]+$/.test(key)) return null;
+	const isModifier = [
+		"Control",
+		"Alt",
+		"Shift",
+		"Meta",
+		"Super",
+	].includes(key);
+	const validNamedKeys = new Set([
+		"Space",
+		"Tab",
+		"Enter",
+		"Esc",
+		"Backspace",
+		"Delete",
+		"Insert",
+		"Home",
+		"End",
+		"PageUp",
+		"PageDown",
+		"Up",
+		"Down",
+		"Left",
+		"Right",
+	]);
+	const validFunctionKey = /^F([1-9]|1\d|2[0-4])$/.test(key);
+	const validSingleKey = /^[A-Z0-9]$/i.test(key);
+
+	if (
+		!isModifier &&
+		(validSingleKey || validFunctionKey || validNamedKeys.has(key))
+	) {
+		parts.push(key.length === 1 ? key.toUpperCase() : key);
+	}
+
+	if (parts.length < 2 || isModifier) return null;
+	return parts.join("+");
+}
+
+function installShortcutCapture(field, settingKey) {
+	field.addEventListener("keydown", (event) => {
+		event.preventDefault();
+		const shortcut = eventToShortcut(event);
+		if (!shortcut) {
+			field.value = "Press modifier + key";
+			return;
+		}
+
+		field.value = shortcutToDisplay(shortcut);
+		window.clickTapLight.setSettings({
+			...state.settings,
+			[settingKey]: shortcut,
+		});
+	});
+
+	field.addEventListener("focus", () => {
+		field.value = "Press shortcut...";
+	});
+
+	field.addEventListener("blur", () => {
+		field.value = shortcutToDisplay(state.settings[settingKey]);
+	});
 }
 
 function applyColorMode(mode) {
@@ -186,7 +304,17 @@ function applyState(nextState) {
 	fields.stroke.value = settings.stroke;
 	fields.glow.value = settings.glow;
 	fields.opacity.value = settings.opacity;
+	fields.fillOpacity.value = settings.fillOpacity ?? 0;
+	fields.ringOpacity.value = settings.ringOpacity ?? 100;
+	fields.centerOpacity.value = settings.centerOpacity ?? 88;
+	fields.spread.value = settings.spread ?? 135;
+	fields.softness.value = settings.softness ?? 0;
+	fields.showRipple.checked = settings.showRipple;
 	fields.keystrokeDuration.value = settings.keystrokeDuration;
+	fields.toggleShortcut.value = shortcutToDisplay(settings.toggleShortcut);
+	fields.controllerShortcut.value = shortcutToDisplay(
+		settings.controllerShortcut,
+	);
 	fields.labelPosition.value = settings.labelPosition;
 	fields.labelText.value = settings.labelText || "";
 	fields.showLabel.checked = settings.showLabel;
@@ -203,6 +331,11 @@ function applyState(nextState) {
 	fields.strokeValue.value = `${settings.stroke}px`;
 	fields.glowValue.value = `${settings.glow}px`;
 	fields.opacityValue.value = `${settings.opacity}%`;
+	fields.fillOpacityValue.value = `${settings.fillOpacity ?? 0}%`;
+	fields.ringOpacityValue.value = `${settings.ringOpacity ?? 100}%`;
+	fields.centerOpacityValue.value = `${settings.centerOpacity ?? 88}%`;
+	fields.spreadValue.value = `${settings.spread ?? 135}%`;
+	fields.softnessValue.value = `${settings.softness ?? 0}%`;
 	fields.keystrokeDurationValue.value = `${settings.keystrokeDuration}ms`;
 	applyAccent(settings.color);
 	applyColorMode(fields.colorMode.value);
@@ -221,7 +354,15 @@ function sendSettings() {
 		stroke: Number(fields.stroke.value),
 		glow: Number(fields.glow.value),
 		opacity: Number(fields.opacity.value),
+		fillOpacity: Number(fields.fillOpacity.value),
+		ringOpacity: Number(fields.ringOpacity.value),
+		centerOpacity: Number(fields.centerOpacity.value),
+		spread: Number(fields.spread.value),
+		softness: Number(fields.softness.value),
+		showRipple: fields.showRipple.checked,
 		keystrokeDuration: Number(fields.keystrokeDuration.value),
+		toggleShortcut: state.settings.toggleShortcut,
+		controllerShortcut: state.settings.controllerShortcut,
 		labelPosition: fields.labelPosition.value,
 		labelText: fields.labelText.value.trim().slice(0, 18),
 		showLabel: fields.showLabel.checked,
@@ -239,6 +380,11 @@ function sendSettings() {
 	fields.strokeValue.value = `${settings.stroke}px`;
 	fields.glowValue.value = `${settings.glow}px`;
 	fields.opacityValue.value = `${settings.opacity}%`;
+	fields.fillOpacityValue.value = `${settings.fillOpacity}%`;
+	fields.ringOpacityValue.value = `${settings.ringOpacity}%`;
+	fields.centerOpacityValue.value = `${settings.centerOpacity}%`;
+	fields.spreadValue.value = `${settings.spread}%`;
+	fields.softnessValue.value = `${settings.softness}%`;
 	fields.keystrokeDurationValue.value = `${settings.keystrokeDuration}ms`;
 	applyAccent(settings.color);
 	applyColorMode(settings.colorMode);
@@ -265,6 +411,12 @@ for (const field of [
 	fields.stroke,
 	fields.glow,
 	fields.opacity,
+	fields.fillOpacity,
+	fields.ringOpacity,
+	fields.centerOpacity,
+	fields.spread,
+	fields.softness,
+	fields.showRipple,
 	fields.keystrokeDuration,
 	fields.labelPosition,
 	fields.labelText,
@@ -281,12 +433,15 @@ for (const field of [
 	field.addEventListener("change", sendSettings);
 }
 
+installShortcutCapture(fields.toggleShortcut, "toggleShortcut");
+installShortcutCapture(fields.controllerShortcut, "controllerShortcut");
+
 fields.test.addEventListener("click", () => {
 	window.clickTapLight.testClick();
 });
 
 fields.reset.addEventListener("click", () => {
-	if (confirm("Reset all RippleClick settings?")) {
+	if (confirm("Reset every RippleClick setting?")) {
 		setActivePreset("demo");
 		window.clickTapLight.resetSettings();
 	}
@@ -295,6 +450,16 @@ fields.reset.addEventListener("click", () => {
 fields.resetPreset.addEventListener("click", () => {
 	window.clickTapLight.setSettings(presets[activePreset]);
 	window.clickTapLight.testClick();
+});
+
+fields.resetShortcuts.addEventListener("click", () => {
+	window.clickTapLight.setSettings({
+		...state.settings,
+		toggleShortcut: "Control+Alt+H",
+		controllerShortcut: "Control+Alt+C",
+		showKeystrokes: true,
+		keystrokeDuration: 1100,
+	});
 });
 
 fields.themeToggle.addEventListener("click", () => {

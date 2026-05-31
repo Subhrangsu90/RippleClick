@@ -32,6 +32,12 @@ const defaultSettings = {
 	stroke: 4,
 	opacity: 96,
 	glow: 32,
+	fillOpacity: 0,
+	ringOpacity: 100,
+	centerOpacity: 88,
+	spread: 135,
+	softness: 0,
+	showRipple: true,
 	showKeystrokes: true,
 	keystrokeDuration: 1100,
 	showLabel: true,
@@ -42,6 +48,8 @@ const defaultSettings = {
 	highlightRight: true,
 	highlightMiddle: true,
 	controlAlwaysOnTop: true,
+	toggleShortcut: "Control+Alt+H",
+	controllerShortcut: "Control+Alt+C",
 };
 let settings = { ...defaultSettings };
 let controlBounds = null;
@@ -100,12 +108,92 @@ function updateTrayMenu() {
 					: "Mouse Hook: Windows only",
 				enabled: false,
 			},
-			{ label: "Toggle Ripple: Ctrl+Alt+H", enabled: false },
-			{ label: "Open Controller: Ctrl+Alt+C", enabled: false },
+			{
+				label: `Toggle Ripple: ${formatShortcutForMenu(settings.toggleShortcut)}`,
+				enabled: false,
+			},
+			{
+				label: `Open Controller: ${formatShortcutForMenu(settings.controllerShortcut)}`,
+				enabled: false,
+			},
 			{ type: "separator" },
 			{ label: "Quit", click: () => app.quit() },
 		]),
 	);
+}
+
+function formatShortcutForMenu(shortcut) {
+	return String(shortcut || "")
+		.replaceAll("Control", "Ctrl")
+		.replaceAll("+", " + ");
+}
+
+function isValidAccelerator(shortcut) {
+	if (typeof shortcut !== "string") return false;
+	if (!/^[\x20-\x7E]+$/.test(shortcut)) return false;
+	const parts = shortcut.split("+").filter(Boolean);
+	if (parts.length < 2) return false;
+	const key = parts.at(-1);
+	const modifiers = new Set(["CommandOrControl", "Control", "Alt", "Shift", "Super", "Meta"]);
+	return parts.slice(0, -1).some((part) => modifiers.has(part)) && !modifiers.has(key);
+}
+
+function safeAccelerator(shortcut, fallback) {
+	return isValidAccelerator(shortcut) ? shortcut : fallback;
+}
+
+function registerAppShortcuts() {
+	globalShortcut.unregisterAll();
+
+	settings.toggleShortcut = safeAccelerator(
+		settings.toggleShortcut,
+		defaultSettings.toggleShortcut,
+	);
+	settings.controllerShortcut = safeAccelerator(
+		settings.controllerShortcut,
+		defaultSettings.controllerShortcut,
+	);
+
+	const registrations = [
+		{
+			shortcut: settings.toggleShortcut,
+			fallback: defaultSettings.toggleShortcut,
+			run: () => {
+				enabled = !enabled;
+				saveState();
+				broadcastState();
+				updateTrayMenu();
+			},
+		},
+		{
+			shortcut: settings.controllerShortcut,
+			fallback: defaultSettings.controllerShortcut,
+			run: toggleControlWindow,
+		},
+	];
+
+	for (const registration of registrations) {
+		try {
+			const ok = globalShortcut.register(
+				registration.shortcut,
+				registration.run,
+			);
+			if (!ok && registration.shortcut !== registration.fallback) {
+				globalShortcut.register(registration.fallback, registration.run);
+			}
+		} catch (error) {
+			console.error(
+				`shortcut registration failed: ${registration.shortcut}`,
+				error,
+			);
+			globalShortcut.register(registration.fallback, registration.run);
+		}
+	}
+
+	if (settingsPath) {
+		saveState();
+	}
+	updateTrayMenu();
 }
 
 function showControlWindow() {
@@ -417,7 +505,7 @@ function getRunnableHookScriptPath() {
 }
 
 function emitClick(click) {
-	if (!enabled || !shouldHighlight(click.button)) return;
+	if (!enabled || !settings.showRipple || !shouldHighlight(click.button)) return;
 
 	const point = click.test
 		? click
@@ -538,13 +626,7 @@ app.whenReady().then(() => {
 	screen.on("display-removed", syncOverlays);
 	screen.on("display-metrics-changed", syncOverlays);
 
-	globalShortcut.register("Control+Alt+H", () => {
-		enabled = !enabled;
-		saveState();
-		broadcastState();
-		updateTrayMenu();
-	});
-	globalShortcut.register("Control+Alt+C", toggleControlWindow);
+	registerAppShortcuts();
 });
 
 ipcMain.handle("get-state", () => getStatePayload());
@@ -571,12 +653,18 @@ ipcMain.on("set-settings", (_event, value) => {
 	settings = { ...settings, ...value };
 	saveState();
 	applyControlWindowOptions();
+	registerAppShortcuts();
 	broadcastState();
 });
 ipcMain.on("reset-settings", () => {
+	enabled = true;
 	settings = { ...defaultSettings };
+	controlBounds = null;
+	setLaunchAtStartup(false);
 	saveState();
 	applyControlWindowOptions();
+	registerAppShortcuts();
+	updateTrayMenu();
 	broadcastState();
 });
 ipcMain.on("open-settings", showSettingsWindow);
