@@ -7,7 +7,8 @@
 		"start": "electron .",
 		"dev": "node scripts/dev-watch.js",
 		"dev:once": "electron .",
-		"package:win": "electron-builder --win portable",
+		"package:win": "electron-builder --win nsis",
+		"package:win:portable": "electron-builder --win portable",
 		"package:win:debug": "npm run package:win -- --config.compression=store"
 	},
 	"keywords": [
@@ -36,10 +37,10 @@
 		},
 		"win": {
 			"icon": "build/icon.ico",
-			"signAndEditExecutable": false,
+			"signAndEditExecutable": true,
 			"target": [
 				{
-					"target": "portable",
+					"target": "nsis",
 					"arch": [
 						"x64"
 					]
@@ -51,7 +52,10 @@
 			"oneClick": false,
 			"allowToChangeInstallationDirectory": true,
 			"createDesktopShortcut": true,
-			"createStartMenuShortcut": true
+			"createStartMenuShortcut": true,
+			"installerIcon": "build/icon.ico",
+			"uninstallerIcon": "build/icon.ico",
+			"artifactName": "${productName}-Setup-v${version}.exe"
 		},
 		"portable": {
 			"artifactName": "${productName}-v${version}.exe"
