@@ -2,26 +2,16 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1.0" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>RippleClick Settings</title>
-		<link
-			rel="stylesheet"
-			href="./control.css" />
+		<link rel="stylesheet" href="./control.css" />
 	</head>
 	<body>
-		<main
-			class="control-app settings-app"
-			aria-label="RippleClick settings">
+		<main class="control-app settings-app" aria-label="RippleClick settings">
 			<section class="control-panel settings-panel">
 				<header class="panel-bar">
-					<div
-						class="brand"
-						aria-label="RippleClick">
-						<span
-							class="brand-mark"
-							aria-hidden="true">
+					<div class="brand" aria-label="RippleClick">
+						<span class="brand-mark" aria-hidden="true">
 							<span class="material-symbols-rounded">ads_click</span>
 						</span>
 						<span class="brand-name">RippleClick settings</span>
@@ -33,7 +23,8 @@
 							class="theme-button"
 							type="button"
 							title="Theme"
-							aria-label="Toggle theme">
+							aria-label="Toggle theme"
+						>
 							<span class="material-symbols-rounded">dark_mode</span>
 						</button>
 						<button
@@ -41,66 +32,48 @@
 							class="icon-button"
 							type="button"
 							title="Close settings"
-							aria-label="Close settings">
+							aria-label="Close settings"
+						>
 							<span class="material-symbols-rounded">close</span>
 						</button>
 					</div>
 				</header>
 
 				<div class="settings-layout">
-					<nav
-						class="settings-sidebar"
-						aria-label="Settings sections">
-						<button
-							type="button"
-							class="settings-tab active"
-							data-section="general">
+					<nav class="settings-sidebar" aria-label="Settings sections">
+						<button type="button" class="settings-tab active" data-section="general">
 							<span class="material-symbols-rounded">tune</span>
 							General
 						</button>
-						<button
-							type="button"
-							class="settings-tab"
-							data-section="clicks">
+						<button type="button" class="settings-tab" data-section="clicks">
 							<span class="material-symbols-rounded">mouse</span>
 							Mouse clicks
 						</button>
-						<button
-							type="button"
-							class="settings-tab"
-							data-section="ripple">
+						<button type="button" class="settings-tab" data-section="ripple">
 							<span class="material-symbols-rounded">radio_button_checked</span>
 							Ripple effect
 						</button>
-						<button
-							type="button"
-							class="settings-tab"
-							data-section="labels">
+						<button type="button" class="settings-tab" data-section="labels">
 							<span class="material-symbols-rounded">label</span>
 							Click labels
 						</button>
-						<button
-							type="button"
-							class="settings-tab"
-							data-section="shortcuts">
+						<button type="button" class="settings-tab" data-section="shortcuts">
 							<span class="material-symbols-rounded">keyboard</span>
 							Shortcuts
 						</button>
 					</nav>
 
 					<div class="settings-content">
-						<section
-							class="settings-page active"
-							data-section-panel="general">
+						<section class="settings-page active" data-section-panel="general">
 							<div class="settings-heading">
 								<div>
 									<h1>General</h1>
-									<p>Set the basics for how RippleClick runs while you present, record, or teach.</p>
+									<p>
+										Set the basics for how RippleClick runs while you present,
+										record, or teach.
+									</p>
 								</div>
-								<button
-									id="test"
-									class="primary-action"
-									type="button">
+								<button id="test" class="primary-action" type="button">
 									<span class="material-symbols-rounded">play_arrow</span>
 									Preview
 								</button>
@@ -108,104 +81,80 @@
 
 							<div class="settings-grid two">
 								<label class="share-chip"
-									><input
-										id="enabled"
-										type="checkbox" />Click highlighting</label
+									><input id="enabled" type="checkbox" />Click highlighting</label
 								>
 								<label class="share-chip"
-									><input
-										id="keepOnTop"
-										type="checkbox" />Keep controller on top</label
+									><input id="keepOnTop" type="checkbox" />Keep controller on
+									top</label
 								>
 								<label class="share-chip"
-									><input
-										id="launchAtStartup"
-										type="checkbox" />Open at startup</label
+									><input id="launchAtStartup" type="checkbox" />Open at
+									startup</label
 								>
 							</div>
 
 							<div class="settings-section">
 								<div class="section-title">
-									<span class="material-symbols-rounded">dashboard_customize</span>
+									<span class="material-symbols-rounded"
+										>dashboard_customize</span
+									>
 									Presets
 								</div>
 								<p class="section-description">
-									Pick a ready-made style, then adjust colors, timing, and labels to fit your workflow.
+									Pick a ready-made style, then adjust colors, timing, and labels
+									to fit your workflow.
 								</p>
-								<nav
-									class="mode-tabs"
-									aria-label="Highlight presets">
-									<button
-										type="button"
-										class="preset active"
-										data-preset="demo">
+								<nav class="mode-tabs" aria-label="Highlight presets">
+									<button type="button" class="preset active" data-preset="demo">
 										Demo
 									</button>
-									<button
-										type="button"
-										class="preset"
-										data-preset="review">
+									<button type="button" class="preset" data-preset="review">
 										Review
 									</button>
-									<button
-										type="button"
-										class="preset"
-										data-preset="subtle">
+									<button type="button" class="preset" data-preset="subtle">
 										Subtle
 									</button>
 								</nav>
 							</div>
 
 							<div class="settings-actions">
-								<button
-									id="resetPreset"
-									class="secondary-action"
-									type="button">
+								<button id="resetPreset" class="secondary-action" type="button">
 									<span class="material-symbols-rounded">tune</span>
 									Restore preset
 								</button>
-								<button
-									id="reset"
-									class="secondary-action"
-									type="button">
+								<button id="reset" class="secondary-action" type="button">
 									<span class="material-symbols-rounded">restart_alt</span>
 									Reset everything
 								</button>
 							</div>
 						</section>
 
-						<section
-							class="settings-page"
-							data-section-panel="clicks">
+						<section class="settings-page" data-section-panel="clicks">
 							<div class="settings-heading">
 								<div>
 									<h1>Mouse clicks</h1>
-									<p>Choose which mouse buttons create a highlight and how each click is colored.</p>
+									<p>
+										Choose which mouse buttons create a highlight and how each
+										click is colored.
+									</p>
 								</div>
 							</div>
 
 							<div class="settings-card">
 								<div class="settings-card-title">Mouse buttons</div>
 								<p class="settings-card-description">
-									Keep the overlay focused by showing only the click types your audience needs to see.
+									Keep the overlay focused by showing only the click types your
+									audience needs to see.
 								</p>
-								<div
-									class="check-grid"
-									aria-label="Mouse buttons">
+								<div class="check-grid" aria-label="Mouse buttons">
 									<label title="Highlight left mouse clicks"
-										><input
-											id="left"
-											type="checkbox" />Left click</label
+										><input id="left" type="checkbox" />Left click</label
 									>
 									<label title="Highlight right mouse clicks"
-										><input
-											id="right"
-											type="checkbox" />Right click</label
+										><input id="right" type="checkbox" />Right click</label
 									>
 									<label title="Highlight middle mouse or wheel clicks"
-										><input
-											id="middle"
-											type="checkbox" />Middle click</label
+										><input id="middle" type="checkbox" />Middle click</label
 									>
 								</div>
 							</div>
@@ -213,14 +162,12 @@
 							<div class="settings-card">
 								<div class="settings-card-title">Click colors</div>
 								<p class="settings-card-description">
-									Use one color for every click, or give each mouse button its own color.
+									Use one color for every click, or give each mouse button its own
+									color.
 								</p>
 								<div class="settings-section section-colors settings-colors">
 									<label title="Highlight color"
-										><span>Primary</span
-										><input
-											id="color"
-											type="color"
+										><span>Primary</span><input id="color" type="color"
 									/></label>
 									<label title="Use one color or one color per mouse button">
 										<span>Mode</span>
@@ -229,66 +176,43 @@
 											<option value="separate">Separate</option>
 										</select>
 									</label>
-									<label
-										class="button-color"
-										title="Left click color"
-										><span>Left</span
-										><input
-											id="leftColor"
-											type="color"
+									<label class="button-color" title="Left click color"
+										><span>Left</span><input id="leftColor" type="color"
 									/></label>
-									<label
-										class="button-color"
-										title="Right click color"
-										><span>Right</span
-										><input
-											id="rightColor"
-											type="color"
+									<label class="button-color" title="Right click color"
+										><span>Right</span><input id="rightColor" type="color"
 									/></label>
-									<label
-										class="button-color"
-										title="Middle click color"
-										><span>Middle</span
-										><input
-											id="middleColor"
-											type="color"
+									<label class="button-color" title="Middle click color"
+										><span>Middle</span><input id="middleColor" type="color"
 									/></label>
 									<label title="Inner color"
-										><span>Inner</span
-										><input
-											id="secondaryColor"
-											type="color"
+										><span>Inner</span><input id="secondaryColor" type="color"
 									/></label>
 								</div>
 							</div>
 						</section>
 
-						<section
-							class="settings-page"
-							data-section-panel="ripple">
+						<section class="settings-page" data-section-panel="ripple">
 							<div class="settings-heading">
 								<div>
 									<h1>Ripple effect</h1>
-									<p>Tune the animation so clicks feel smooth, visible, and professional on screen.</p>
+									<p>
+										Tune the animation so clicks feel smooth, visible, and
+										professional on screen.
+									</p>
 								</div>
 							</div>
 
 							<div class="settings-card">
 								<div class="settings-card-title">Shape and timing</div>
 								<p class="settings-card-description">
-									Adjust how large, fast, bright, and bold the ripple appears after each click.
+									Adjust how large, fast, bright, and bold the ripple appears
+									after each click.
 								</p>
-								<div
-									class="sliders"
-									aria-label="Ripple style">
+								<div class="sliders" aria-label="Ripple style">
 									<label>
 										<span>Size</span>
-										<input
-											id="size"
-											type="range"
-											min="48"
-											max="180"
-											step="4" />
+										<input id="size" type="range" min="48" max="180" step="4" />
 										<output id="sizeValue"></output>
 									</label>
 									<label>
@@ -298,27 +222,18 @@
 											type="range"
 											min="260"
 											max="1400"
-											step="20" />
+											step="20"
+										/>
 										<output id="durationValue"></output>
 									</label>
 									<label>
 										<span>Ring</span>
-										<input
-											id="stroke"
-											type="range"
-											min="2"
-											max="12"
-											step="1" />
+										<input id="stroke" type="range" min="2" max="12" step="1" />
 										<output id="strokeValue"></output>
 									</label>
 									<label>
 										<span>Glow</span>
-										<input
-											id="glow"
-											type="range"
-											min="0"
-											max="80"
-											step="4" />
+										<input id="glow" type="range" min="0" max="80" step="4" />
 										<output id="glowValue"></output>
 									</label>
 									<label>
@@ -328,7 +243,8 @@
 											type="range"
 											min="35"
 											max="100"
-											step="1" />
+											step="1"
+										/>
 										<output id="opacityValue"></output>
 									</label>
 									<label>
@@ -338,7 +254,8 @@
 											type="range"
 											min="105"
 											max="180"
-											step="1" />
+											step="1"
+										/>
 										<output id="spreadValue"></output>
 									</label>
 									<label>
@@ -348,7 +265,8 @@
 											type="range"
 											min="0"
 											max="80"
-											step="1" />
+											step="1"
+										/>
 										<output id="softnessValue"></output>
 									</label>
 								</div>
@@ -357,11 +275,10 @@
 							<div class="settings-card">
 								<div class="settings-card-title">Light details</div>
 								<p class="settings-card-description">
-									Fine-tune the fill, ring strength, and center flash for a cleaner click-light look.
+									Fine-tune the fill, ring strength, and center flash for a
+									cleaner click-light look.
 								</p>
-								<div
-									class="sliders"
-									aria-label="Ripple light details">
+								<div class="sliders" aria-label="Ripple light details">
 									<label>
 										<span>Fill</span>
 										<input
@@ -369,7 +286,8 @@
 											type="range"
 											min="0"
 											max="45"
-											step="1" />
+											step="1"
+										/>
 										<output id="fillOpacityValue"></output>
 									</label>
 									<label>
@@ -379,7 +297,8 @@
 											type="range"
 											min="20"
 											max="100"
-											step="1" />
+											step="1"
+										/>
 										<output id="ringOpacityValue"></output>
 									</label>
 									<label>
@@ -389,7 +308,8 @@
 											type="range"
 											min="0"
 											max="100"
-											step="1" />
+											step="1"
+										/>
 										<output id="centerOpacityValue"></output>
 									</label>
 								</div>
@@ -398,37 +318,33 @@
 							<div class="settings-card">
 								<div class="settings-card-title">Effects</div>
 								<p class="settings-card-description">
-									Add or remove extra details so the ripple matches your screen and audience.
+									Add or remove extra details so the ripple matches your screen
+									and audience.
 								</p>
-								<div
-									class="check-grid"
-									aria-label="Ripple effects">
+								<div class="check-grid" aria-label="Ripple effects">
 									<label title="Show click ripple animation"
-										><input
-											id="showRipple"
-											type="checkbox" />Show ripple effect</label
+										><input id="showRipple" type="checkbox" />Show ripple
+										effect</label
 									>
 									<label title="Draw a second ring around the click"
-										><input
-											id="doubleRing"
-											type="checkbox" />Inner ring</label
+										><input id="doubleRing" type="checkbox" />Inner ring</label
 									>
 									<label title="Flash the center of the click"
-										><input
-											id="followThrough"
-											type="checkbox" />Soft center glow</label
+										><input id="followThrough" type="checkbox" />Soft center
+										glow</label
 									>
 								</div>
 							</div>
 						</section>
 
-						<section
-							class="settings-page"
-							data-section-panel="labels">
+						<section class="settings-page" data-section-panel="labels">
 							<div class="settings-heading">
 								<div>
 									<h1>Click labels</h1>
-									<p>Add a short text label near the ripple when a click needs extra context.</p>
+									<p>
+										Add a short text label near the ripple when a click needs
+										extra context.
+									</p>
 								</div>
 							</div>
 
@@ -439,14 +355,13 @@
 									type="text"
 									maxlength="18"
 									placeholder="Click"
-									aria-label="Click label" />
+									aria-label="Click label"
+								/>
 							</label>
 
 							<div class="settings-grid two">
 								<label class="share-chip"
-									><input
-										id="showLabel"
-										type="checkbox" />Show click label</label
+									><input id="showLabel" type="checkbox" />Show click label</label
 								>
 								<label title="Label position">
 									<span>Position</span>
@@ -458,28 +373,29 @@
 							</div>
 						</section>
 
-						<section
-							class="settings-page"
-							data-section-panel="shortcuts">
+						<section class="settings-page" data-section-panel="shortcuts">
 							<div class="settings-heading">
 								<div>
 									<h1>Shortcuts</h1>
-									<p>Set global hotkeys and choose how typed shortcuts appear during recordings.</p>
+									<p>
+										Set global hotkeys and choose how typed shortcuts appear
+										during recordings.
+									</p>
 								</div>
 							</div>
 
 							<div class="settings-card">
 								<div class="settings-card-title">Keyboard display</div>
 								<p class="settings-card-description">
-									Show keyboard input on screen so viewers can follow shortcuts while you work.
+									Show keyboard input on screen so viewers can follow shortcuts
+									while you work.
 								</p>
 								<div class="settings-grid two">
 									<label
 										class="share-chip"
 										title="Show pressed keyboard keys on screen"
-										><input
-											id="showKeystrokes"
-											type="checkbox" />Show keyboard input</label
+										><input id="showKeystrokes" type="checkbox" />Show keyboard
+										input</label
 									>
 									<label>
 										<span>Display time</span>
@@ -488,7 +404,8 @@
 											type="range"
 											min="500"
 											max="2400"
-											step="100" />
+											step="100"
+										/>
 										<output id="keystrokeDurationValue"></output>
 									</label>
 								</div>
@@ -497,7 +414,8 @@
 							<div class="settings-card">
 								<div class="settings-card-title">App shortcuts</div>
 								<p class="settings-card-description">
-									Click a field, then press a shortcut. Use at least one modifier, such as Ctrl or Alt.
+									Click a field, then press a shortcut. Use at least one modifier,
+									such as Ctrl or Alt.
 								</p>
 								<div class="settings-grid two">
 									<label>
@@ -507,7 +425,8 @@
 											class="shortcut-input"
 											type="text"
 											readonly
-											aria-label="Toggle ripple shortcut" />
+											aria-label="Toggle ripple shortcut"
+										/>
 									</label>
 									<label>
 										<span>Controller</span>
@@ -516,15 +435,19 @@
 											class="shortcut-input"
 											type="text"
 											readonly
-											aria-label="Open controller shortcut" />
+											aria-label="Open controller shortcut"
+										/>
 									</label>
 								</div>
 								<div class="settings-actions">
 									<button
 										id="resetShortcuts"
 										class="secondary-action"
-										type="button">
-										<span class="material-symbols-rounded">keyboard_return</span>
+										type="button"
+									>
+										<span class="material-symbols-rounded"
+											>keyboard_return</span
+										>
 										Restore default shortcuts
 									</button>
 								</div>
@@ -533,10 +456,7 @@
 					</div>
 				</div>
 
-				<div
-					id="platformStatus"
-					class="status"
-					aria-live="polite">
+				<div id="platformStatus" class="status" aria-live="polite">
 					<span class="status-dot"></span>
 					<span id="platformMessage">Checking platform support...</span>
 				</div>

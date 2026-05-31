@@ -90,8 +90,7 @@ function updateTrayMenu() {
 			{ label: "Open Settings", click: showSettingsWindow },
 			{
 				label: "Preview Ripple",
-				click: () =>
-					emitClick({ button: "left", x: 160, y: 160, test: true }),
+				click: () => emitClick({ button: "left", x: 160, y: 160, test: true }),
 			},
 			{ type: "separator" },
 			{
@@ -122,9 +121,7 @@ function showControlWindow() {
 	}
 
 	const savedBounds = getUsableControlBounds();
-	const savedPosition = savedBounds
-		? { x: savedBounds.x, y: savedBounds.y }
-		: {};
+	const savedPosition = savedBounds ? { x: savedBounds.x, y: savedBounds.y } : {};
 	controlWindow = new BrowserWindow({
 		width: 430,
 		height: 174,
@@ -200,10 +197,7 @@ function showSettingsWindow() {
 
 function applyControlWindowOptions() {
 	if (!controlWindow || controlWindow.isDestroyed()) return;
-	controlWindow.setAlwaysOnTop(
-		Boolean(settings.controlAlwaysOnTop),
-		"screen-saver",
-	);
+	controlWindow.setAlwaysOnTop(Boolean(settings.controlAlwaysOnTop), "screen-saver");
 	if (settings.controlAlwaysOnTop) {
 		controlWindow.moveTop();
 	}
@@ -238,11 +232,7 @@ function saveControlBounds() {
 }
 
 function isPointInsideControlWindow(point) {
-	if (
-		!controlWindow ||
-		controlWindow.isDestroyed() ||
-		!controlWindow.isVisible()
-	) {
+	if (!controlWindow || controlWindow.isDestroyed() || !controlWindow.isVisible()) {
 		return false;
 	}
 
@@ -386,10 +376,7 @@ function loadSavedState() {
 function saveState() {
 	if (!settingsPath) return;
 	fs.mkdirSync(path.dirname(settingsPath), { recursive: true });
-	fs.writeFileSync(
-		settingsPath,
-		JSON.stringify({ enabled, settings, controlBounds }, null, 2),
-	);
+	fs.writeFileSync(settingsPath, JSON.stringify({ enabled, settings, controlBounds }, null, 2));
 }
 
 function shouldHighlight(button) {
@@ -429,17 +416,12 @@ function emitClick(click) {
 
 	for (const [displayId, win] of overlays) {
 		if (win.isDestroyed()) continue;
-		const display = screen
-			.getAllDisplays()
-			.find((item) => item.id === displayId);
+		const display = screen.getAllDisplays().find((item) => item.id === displayId);
 		if (!display) continue;
 
 		const { x, y, width, height } = display.bounds;
 		const inside =
-			point.x >= x &&
-			point.x <= x + width &&
-			point.y >= y &&
-			point.y <= y + height;
+			point.x >= x && point.x <= x + width && point.y >= y && point.y <= y + height;
 		if (inside || click.test) {
 			applyOverlayWindowOptions(win);
 			win.webContents.send("click", {
@@ -512,9 +494,7 @@ function startMouseHook() {
 
 	hookProcess.on("exit", (code, signal) => {
 		if (!app.isQuitting) {
-			console.error(
-				`mouse hook exited; restarting. code=${code} signal=${signal}`,
-			);
+			console.error(`mouse hook exited; restarting. code=${code} signal=${signal}`);
 		}
 		hookProcess = null;
 		if (!app.isQuitting) setTimeout(startMouseHook, 1200);
@@ -559,11 +539,7 @@ ipcMain.on("set-launch-at-startup", (_event, value) => {
 });
 ipcMain.on("control-interaction", () => {
 	ignoreControlToggleUntil = Date.now() + 500;
-	if (
-		controlWindow &&
-		!controlWindow.isDestroyed() &&
-		controlWindow.isVisible()
-	) {
+	if (controlWindow && !controlWindow.isDestroyed() && controlWindow.isVisible()) {
 		if (settings.controlAlwaysOnTop) controlWindow.moveTop();
 	}
 });
@@ -583,9 +559,7 @@ ipcMain.on("open-settings", showSettingsWindow);
 ipcMain.on("close-settings", () => {
 	if (settingsWindow && !settingsWindow.isDestroyed()) settingsWindow.hide();
 });
-ipcMain.on("test-click", () =>
-	emitClick({ button: "left", x: 180, y: 180, test: true }),
-);
+ipcMain.on("test-click", () => emitClick({ button: "left", x: 180, y: 180, test: true }));
 ipcMain.on("window-control", (_event, action) => {
 	if (!controlWindow || controlWindow.isDestroyed()) return;
 	if (action === "minimize") controlWindow.minimize();

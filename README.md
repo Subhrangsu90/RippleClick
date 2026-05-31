@@ -4,6 +4,10 @@ RippleClick is a polished Windows tray app that makes every click easy to follow
 
 This is built with Electron because a desktop overlay needs Windows APIs that React Native does not handle cleanly on its own.
 
+## Open Source
+
+RippleClick is open source under the [MIT License](LICENSE). Contributions are welcome; start with [CONTRIBUTING.md](CONTRIBUTING.md) for setup, pull request guidance, and bug report details.
+
 ## Features
 
 - Always-on-top transparent overlay
@@ -64,6 +68,20 @@ npm run package:win
 ```
 
 The packaged app will be created under `dist`.
+
+## Check
+
+Run the project validation before opening a pull request:
+
+```powershell
+npm run check
+```
+
+This checks JavaScript syntax, runs ESLint, and verifies Prettier formatting. To format files locally:
+
+```powershell
+npm run format
+```
 
 ## Notes
 

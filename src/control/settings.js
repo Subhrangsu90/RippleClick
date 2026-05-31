@@ -194,13 +194,7 @@ function eventToShortcut(event) {
 	};
 	const key = keyMap[event.key] || event.key;
 	if (!/^[\x20-\x7E]+$/.test(key)) return null;
-	const isModifier = [
-		"Control",
-		"Alt",
-		"Shift",
-		"Meta",
-		"Super",
-	].includes(key);
+	const isModifier = ["Control", "Alt", "Shift", "Meta", "Super"].includes(key);
 	const validNamedKeys = new Set([
 		"Space",
 		"Tab",
@@ -221,10 +215,7 @@ function eventToShortcut(event) {
 	const validFunctionKey = /^F([1-9]|1\d|2[0-4])$/.test(key);
 	const validSingleKey = /^[A-Z0-9]$/i.test(key);
 
-	if (
-		!isModifier &&
-		(validSingleKey || validFunctionKey || validNamedKeys.has(key))
-	) {
+	if (!isModifier && (validSingleKey || validFunctionKey || validNamedKeys.has(key))) {
 		parts.push(key.length === 1 ? key.toUpperCase() : key);
 	}
 
@@ -262,11 +253,7 @@ function applyColorMode(mode) {
 	for (const label of document.querySelectorAll(".button-color")) {
 		label.classList.toggle("is-disabled", !isSeparate);
 	}
-	for (const field of [
-		fields.leftColor,
-		fields.rightColor,
-		fields.middleColor,
-	]) {
+	for (const field of [fields.leftColor, fields.rightColor, fields.middleColor]) {
 		field.disabled = !isSeparate;
 	}
 }
@@ -276,10 +263,7 @@ function showSection(section) {
 		tab.classList.toggle("active", tab.dataset.section === section);
 	}
 	for (const panel of document.querySelectorAll(".settings-page")) {
-		panel.classList.toggle(
-			"active",
-			panel.dataset.sectionPanel === section,
-		);
+		panel.classList.toggle("active", panel.dataset.sectionPanel === section);
 	}
 }
 
@@ -287,10 +271,7 @@ function applyState(nextState) {
 	state = nextState;
 	const settings = state.settings;
 
-	fields.platformStatus.classList.toggle(
-		"unsupported",
-		!state.platform.supported,
-	);
+	fields.platformStatus.classList.toggle("unsupported", !state.platform.supported);
 	fields.platformMessage.textContent = state.platform.message;
 	fields.enabled.checked = state.enabled;
 	fields.color.value = settings.color;
@@ -312,9 +293,7 @@ function applyState(nextState) {
 	fields.showRipple.checked = settings.showRipple;
 	fields.keystrokeDuration.value = settings.keystrokeDuration;
 	fields.toggleShortcut.value = shortcutToDisplay(settings.toggleShortcut);
-	fields.controllerShortcut.value = shortcutToDisplay(
-		settings.controllerShortcut,
-	);
+	fields.controllerShortcut.value = shortcutToDisplay(settings.controllerShortcut);
 	fields.labelPosition.value = settings.labelPosition;
 	fields.labelText.value = settings.labelText || "";
 	fields.showLabel.checked = settings.showLabel;
@@ -463,9 +442,7 @@ fields.resetShortcuts.addEventListener("click", () => {
 });
 
 fields.themeToggle.addEventListener("click", () => {
-	applyTheme(
-		document.documentElement.dataset.theme === "light" ? "dark" : "light",
-	);
+	applyTheme(document.documentElement.dataset.theme === "light" ? "dark" : "light");
 });
 
 fields.closeSettings.addEventListener("click", () => {
