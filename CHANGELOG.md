@@ -6,6 +6,8 @@ This project follows a simple versioned changelog. Add new entries under `Unrele
 
 ## Unreleased
 
+## 1.1.0 - 2026-05-31
+
 - Added open-source project documentation and contribution templates.
 
 ## 1.0.0

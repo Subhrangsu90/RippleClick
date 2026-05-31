@@ -1,6 +1,6 @@
 {
 	"name": "ripple-click",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"description": "A polished Windows tray app that makes clicks easy to follow during demos, reviews, training, and screen sharing.",
 	"main": "src/main.js",
 	"scripts": {
