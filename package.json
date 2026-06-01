@@ -24,8 +24,16 @@
 		"click-highlight",
 		"electron"
 	],
-	"author": "",
+	"author": "Subhrangsu Bera",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Subhrangsu90/RippleClick.git"
+	},
+	"bugs": {
+		"url": "https://github.com/Subhrangsu90/RippleClick/issues"
+	},
+	"homepage": "https://github.com/Subhrangsu90/RippleClick#readme",
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
 		"electron": "^42.0.0",

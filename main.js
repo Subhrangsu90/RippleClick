@@ -7,6 +7,7 @@ const {
 	screen,
 	nativeImage,
 	globalShortcut,
+	shell,
 } = require("electron");
 const path = require("node:path");
 const { spawn } = require("node:child_process");
@@ -525,6 +526,12 @@ app.whenReady().then(() => {
 		updateTrayMenu();
 	});
 	globalShortcut.register("Control+Alt+C", toggleControlWindow);
+});
+
+ipcMain.on("open-external", (_event, url) => {
+	if (typeof url === "string" && (url.startsWith("https://") || url.startsWith("http://"))) {
+		shell.openExternal(url).catch((err) => console.error("Failed to open external URL:", err));
+	}
 });
 
 ipcMain.handle("get-state", () => getStatePayload());

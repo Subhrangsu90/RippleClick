@@ -1,6 +1,7 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("clickTapLight", {
+	openExternal: (url) => ipcRenderer.send("open-external", url),
 	getState: () => ipcRenderer.invoke("get-state"),
 	setEnabled: (value) => ipcRenderer.send("set-enabled", value),
 	setLaunchAtStartup: (value) => ipcRenderer.send("set-launch-at-startup", value),

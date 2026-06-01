@@ -7,6 +7,7 @@ const {
 	screen,
 	nativeImage,
 	globalShortcut,
+	shell,
 } = require("electron");
 const path = require("node:path");
 const { spawn } = require("node:child_process");
@@ -796,6 +797,12 @@ ipcMain.on("reset-settings", () => {
 	updateTrayMenu();
 	broadcastState();
 });
+ipcMain.on("open-external", (_event, url) => {
+	if (typeof url === "string" && (url.startsWith("https://") || url.startsWith("http://"))) {
+		shell.openExternal(url).catch((err) => console.error("Failed to open external URL:", err));
+	}
+});
+
 ipcMain.on("open-settings", showSettingsWindow);
 ipcMain.on("close-settings", () => {
 	if (settingsWindow && !settingsWindow.isDestroyed()) settingsWindow.hide();

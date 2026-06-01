@@ -1567,3 +1567,50 @@ output {
 .danger-action:active {
 	background: color-mix(in srgb, var(--color-danger) 80%, var(--color-text));
 }
+
+/* About Page Styles */
+.developer-info {
+	display: flex;
+	align-items: center;
+	gap: var(--space-5);
+}
+
+.developer-avatar-container {
+	display: grid;
+	place-items: center;
+	width: 3.5rem;
+	height: 3.5rem;
+	border-radius: var(--radius-round);
+	background: var(--color-surface-raised);
+	color: var(--color-primary);
+	border: var(--border-width) solid var(--color-border);
+}
+
+.dev-avatar-icon {
+	font-size: 2.25rem !important;
+}
+
+.developer-details h3 {
+	margin: 0 0 var(--space-1) 0;
+	font-size: var(--text-md);
+	font-weight: 700;
+	color: var(--color-text);
+}
+
+.developer-details p {
+	margin: 0;
+	font-size: var(--text-xs);
+	color: var(--color-text-quiet);
+}
+
+.support-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-3);
+	margin-top: var(--space-2);
+}
+
+.about-btn {
+	padding: 0 var(--space-6);
+	height: var(--size-input);
+}

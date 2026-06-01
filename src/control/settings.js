@@ -74,6 +74,8 @@ const fields = {
 	confirmModal: document.getElementById("confirmModal"),
 	confirmResetBtn: document.getElementById("confirmResetBtn"),
 	cancelResetBtn: document.getElementById("cancelResetBtn"),
+	btnStarRepo: document.getElementById("btnStarRepo"),
+	btnGithubRepo: document.getElementById("btnGithubRepo"),
 };
 
 const presets = {
@@ -1004,6 +1006,18 @@ fields.themeToggle.addEventListener("click", () => {
 fields.closeSettings.addEventListener("click", () => {
 	window.clickTapLight.closeSettings();
 });
+
+if (fields.btnStarRepo) {
+	fields.btnStarRepo.addEventListener("click", () => {
+		window.clickTapLight.openExternal("https://github.com/Subhrangsu90/RippleClick");
+	});
+}
+
+if (fields.btnGithubRepo) {
+	fields.btnGithubRepo.addEventListener("click", () => {
+		window.clickTapLight.openExternal("https://github.com/Subhrangsu90/RippleClick");
+	});
+}
 
 for (const tab of document.querySelectorAll(".settings-tab")) {
 	tab.addEventListener("click", () => showSection(tab.dataset.section));

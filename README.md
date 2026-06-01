@@ -8,6 +8,13 @@ This is built with Electron because a desktop overlay needs Windows APIs that Re
 
 RippleClick is open source under the [MIT License](LICENSE). Contributions are welcome; start with [CONTRIBUTING.md](CONTRIBUTING.md) for setup, pull request guidance, and bug report details.
 
+## Support & Links
+
+If you enjoy RippleClick, please support the project:
+
+- ⭐ **[Star the repository on GitHub](https://github.com/Subhrangsu90/RippleClick)** to show your support!
+- 🔗 Visit the official **[GitHub Repository](https://github.com/Subhrangsu90/RippleClick)** for updates and code (Created by Subhrangsu Bera).
+
 ## Features
 
 - Always-on-top transparent overlay
